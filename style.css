@@ -16,12 +16,7 @@ body {
   font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
   line-height: 1.6;
   color: var(--text);
-  background: linear-gradient(
-      180deg,
-      rgba(0,0,0,0.35) 0%,   /* darker at the very top */
-      rgba(0,0,0,0.15) 120px, /* soft fade mid-way */
-      var(--bg) 100%          /* normal background at bottom */
-  );
+  background: linear-gradient(to bottom, #dbe4f7 0%, #a9b8e8 50%, #7b8ec9 100%);
 }
 
 
