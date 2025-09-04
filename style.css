@@ -266,9 +266,10 @@ mark {
   width: min(1250px, 96%);  /* was 1100px, now wider */
 }
 mark.active {
-  background: #ffeb3b;   /* highlight yellow */
-  font-weight: bold;     /* make it bold */
-  border: 1px solid #f59e0b; /* optional outline */
+  background: #ffeb3b;
+  font-weight: bold;
+  border: 1px solid #f59e0b;
   padding: 0 3px;
   border-radius: 3px;
 }
+
