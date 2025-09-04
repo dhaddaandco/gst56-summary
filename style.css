@@ -32,11 +32,15 @@ header {
 
 
 .page-header {
-  text-align: left;           /* Align everything left */
-  margin: 12px 0 12px;
-  padding-left: 20px;         /* Small left padding for breathing space */
-  border-bottom: 2px solid #ffffff;
-  width: 100%;                /* Underline spans full width */
+  margin: 10px 0 12px; /* reduced space above heading */
+  padding: 0;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between; /* heading left, search right */
+  align-items: center;
+  gap: 12px;
 }
 
 .main-title {
@@ -49,11 +53,31 @@ header {
 }
 
 .sub-date {
-  font-size: clamp(14px, 1.5vw, 18px);
+  font-size: clamp(16px, 1.8vw, 20px);
   font-weight: 500;
   color: #e0e7ff;
-  margin: 4px 0 8px;
-  text-align: left;           /* Align date under heading */
+  margin: 4px 0 0;
+  text-align: left; /* aligned with heading */
+}
+
+.title-underline {
+  border: none;
+  border-top: 2px solid #ffffff;
+  margin-top: 6px;
+}
+
+#searchBox {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  min-width: 200px;
+}
+
+#searchBox:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--ring);
 }
 
 .tabs {
