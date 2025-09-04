@@ -144,22 +144,23 @@ function goToResult(index) {
 // -------------------------
 // SearchBox Events
 // -------------------------
+// -------------------------
+// SearchBox Events
+// -------------------------
 searchBox.addEventListener('input', function() {
   const query = this.value.toLowerCase();
-  if (query !== lastQuery) {
-    lastQuery = query;
-    doSearch(query);
-  }
+  lastQuery = query;            // always update lastQuery
+  doSearch(query);              // always refresh search results
 });
 
 searchBox.addEventListener('keydown', function(e) {
   if (e.key === "Enter") {
     e.preventDefault();
     if (searchResults.length > 0) {
-      goToResult(currentResult + 1);
+      goToResult(currentResult + 1);   // cycle forward
     }
-  } else if (e.key === "F3" && e.shiftKey) {
-    // Optional: shift+F3 for backwards navigation
+  } else if (e.shiftKey && e.key === "Enter") {
+    // Shift+Enter to go backwards
     e.preventDefault();
     if (searchResults.length > 0) {
       goToResult(currentResult - 1);
