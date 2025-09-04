@@ -119,11 +119,13 @@ details.qa summary {
   font-weight: 500;
 }
 footer.foot {
-  color: var(--muted);
+  color: #ffffff;          /* White text */
   font-size: 14px;
   padding: 12px 0 36px;
   text-align: center;
+  text-shadow: 0px 1px 3px rgba(0,0,0,0.3); /* subtle shadow for readability */
 }
+
 
 .header-row {
   display: flex;
