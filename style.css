@@ -26,6 +26,18 @@ body {
   margin: 0 auto;
 }
 
+.page-header {
+  padding: 12px 0 8px;
+  border-bottom: 2px solid #ffffff33;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+
 header {
   padding: 28px 0 8px;
 }
