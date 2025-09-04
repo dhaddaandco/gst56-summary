@@ -63,11 +63,14 @@ function clearHighlights() {
 }
 
 function doSearch(query) {
-  clearHighlights();
+  clearHighlights();   // always clear first
   searchResults = [];
   currentResult = -1;
 
-  if (!query.trim()) return;
+  if (!query.trim()) {
+    searchCount.textContent = "";  // also reset the counter
+    return; // stop here if box is empty
+  }
 
   panels.forEach(panel => {
     const textNodes = panel.querySelectorAll("p, li, h2, h3, summary, div");
@@ -89,6 +92,7 @@ function doSearch(query) {
     searchCount.textContent = "No results found";
   }
 }
+
 
 function goToResult(index) {
   if (searchResults.length === 0) return;
