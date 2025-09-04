@@ -57,18 +57,20 @@ let currentResult = -1;   // current index
 
 function clearHighlights() {
   panels.forEach(panel => {
-    panel.innerHTML = panel.innerHTML.replace(/<mark>(.*?)<\/mark>/g, "$1");
+    const nodes = panel.querySelectorAll("p, li, h2, h3, summary, div");
+    nodes.forEach(node => {
+      node.innerHTML = node.textContent; // reset to plain text
+    });
   });
   searchCount.textContent = "";
+  searchResults = [];
+  currentResult = -1;
 }
 
 function doSearch(query) {
   clearHighlights();   // always clear first
-  searchResults = [];
-  currentResult = -1;
 
   if (!query.trim()) {
-    searchCount.textContent = "";  // also reset the counter
     return; // stop here if box is empty
   }
 
@@ -92,7 +94,6 @@ function doSearch(query) {
     searchCount.textContent = "No results found";
   }
 }
-
 
 function goToResult(index) {
   if (searchResults.length === 0) return;
