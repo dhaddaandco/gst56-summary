@@ -1,4 +1,4 @@
-// Accessible tabs with hash-based routing (no framework)
+  // Accessible tabs with hash-based routing (no framework)
 (function(){
   const tablist = document.querySelector('.tabs');
   const tabs = Array.from(document.querySelectorAll('.tab'));
@@ -58,37 +58,45 @@ let currentResult = -1;   // current index
 function clearHighlights() {
   panels.forEach(panel => {
     panel.querySelectorAll("mark").forEach(m => {
-      const text = document.createTextNode(m.textContent); 
-      m.replaceWith(text);  // restore text without killing structure
+      const textNode = document.createTextNode(m.textContent);
+      m.replaceWith(textNode);  // unwrap marks safely
     });
   });
-  searchCount.textContent = "";
   searchResults = [];
   currentResult = -1;
+  searchCount.textContent = "";
 }
 
 function doSearch(query) {
-  clearHighlights();   // always clear first
-  searchResults = [];
-  currentResult = -1;
+  clearHighlights();
+  if (!query.trim()) return;
 
-  if (!query.trim()) {
-    return; // stop here if box is empty
-  }
+  const regex = new RegExp(`(${query})`, "gi");
 
   panels.forEach(panel => {
     const walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT, null, false);
-    const regex = new RegExp(`(${query})`, "gi");
     let node;
-    while (node = walker.nextNode()) {
-      if (node.nodeValue.toLowerCase().includes(query)) {
-        const span = document.createElement("span");
-        span.innerHTML = node.nodeValue.replace(regex, "<mark>$1</mark>");
-        node.parentNode.replaceChild(span, node);
-
-        span.querySelectorAll("mark").forEach(m => {
-          searchResults.push({ panelId: panel.id, element: m });
+    while ((node = walker.nextNode())) {
+      if (regex.test(node.nodeValue)) {
+        const frag = document.createDocumentFragment();
+        let lastIdx = 0;
+        node.nodeValue.replace(regex, (match, p1, offset) => {
+          // plain text before match
+          if (offset > lastIdx) {
+            frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx, offset)));
+          }
+          // highlight
+          const mark = document.createElement("mark");
+          mark.textContent = match;
+          frag.appendChild(mark);
+          searchResults.push({ panelId: panel.id, element: mark });
+          lastIdx = offset + match.length;
         });
+        // leftover text
+        if (lastIdx < node.nodeValue.length) {
+          frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx)));
+        }
+        node.parentNode.replaceChild(frag, node);
       }
     }
   });
