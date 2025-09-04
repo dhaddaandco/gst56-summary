@@ -1,12 +1,12 @@
 /* Minimal, clean aesthetic with Roboto */
 :root {
-  --bg: #0b0d12;
-  --card: #121620;
-  --muted: #98a2b3;
-  --text: #e5e7eb;
-  --primary: #3b82f6;
-  --ring: rgba(59,130,246,0.35);
-  --border: #232838;
+  --bg: #f7f7fb;
+  --card: #ffffff;
+  --muted: #475569;
+  --text: #0f172a;
+  --primary: #004aad;
+  --ring: rgba(0,74,173,0.25);
+  --border: #e5e7eb;
 }
 
 * { box-sizing: border-box; }
