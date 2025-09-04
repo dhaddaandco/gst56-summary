@@ -25,7 +25,7 @@
   <nav class="tabs container" role="tablist" aria-label="Sections">
     <button role="tab" class="tab" data-target="overview" aria-selected="true" id="tab-overview">Overview</button>
     <button role="tab" class="tab" data-target="effective-date" aria-selected="false" id="tab-effective-date">Effective Date</button>
-    <button role="tab" class="tab" data-target="rate-structure" aria-selected="false" id="tab-rate-structure">Rate Structure</button>
+    <button role="tab" class="tab" data-target="rate-rationalisation" aria-selected="false" id="tab-rate-rationalisation">Rate Rationalisation</button>
     <button role="tab" class="tab" data-target="goods" aria-selected="false" id="tab-goods">Goods</button>
     <button role="tab" class="tab" data-target="services" aria-selected="false" id="tab-services">Services</button>
     <button role="tab" class="tab" data-target="trade-facilitation" aria-selected="false" id="tab-trade-facilitation">Trade Facilitation</button>
@@ -59,12 +59,48 @@
       </ul>
     </section>
 
-    <!-- Rate Structure -->
-    <section class="panel" id="rate-structure" role="tabpanel" aria-labelledby="tab-rate-structure">
-      <h2>Rate Structure (Snapshot)</h2>
-      <p>High‑level summary of rate rationalisation across goods and services. Add your detailed table here if needed.</p>
-      <div class="note">Tip: You can replace this content with your own tables/annexures later.</div>
-    </section>
+<!-- Rate Rationalisation -->
+<section class="panel" id="rate-rationalisation" role="tabpanel" aria-labelledby="tab-rate-rationalisation">
+  <h2>Rate Rationalisation</h2>
+
+  <!-- Sub-tabs -->
+  <nav class="sub-tabs" role="tablist" aria-label="Rate Rationalisation Categories">
+    <button class="sub-tab" data-target="Food" aria-selected="true">Food</button>
+    <button class="sub-tab" data-target="Sin-Luxury">Sin & Luxury</button>
+    <button class="sub-tab" data-target="Motor-Vehicles">Motor Vehicles</button>
+    <button class="sub-tab" data-target="Agriculture">Agriculture</button>
+    <button class="sub-tab" data-target="Coal-Renewable">Coal & Renewable</button>
+    <button class="sub-tab" data-target="Textile">Textile</button>
+    <button class="sub-tab" data-target="Health">Health</button>
+    <button class="sub-tab" data-target="Stationery">Stationery</button>
+    <button class="sub-tab" data-target="Paper-Wood">Paper & Wood</button>
+    <button class="sub-tab" data-target="Defence">Defence</button>
+    <button class="sub-tab" data-target="Construction">Construction</button>
+    <button class="sub-tab" data-target="Transportation">Transportation</button>
+    <button class="sub-tab" data-target="Local-Delivery">Local Delivery</button>
+    <button class="sub-tab" data-target="Job-Work">Job Work</button>
+    <button class="sub-tab" data-target="Insurance">Insurance</button>
+    <button class="sub-tab" data-target="Others">Others</button>
+  </nav>
+
+  <!-- Sub-tab Panels -->
+  <div class="sub-panels">
+    <div class="sub-panel show" id="Food">
+      <h3>Food</h3>
+      <!-- Food Table goes here -->
+    </div>
+    <div class="sub-panel" id="Sin-Luxury">
+      <h3>Sin & Luxury</h3>
+      <!-- Sin & Luxury Table goes here -->
+    </div>
+    <div class="sub-panel" id="Motor-Vehicles">
+      <h3>Motor Vehicles</h3>
+      <!-- Motor Vehicles Table goes here -->
+    </div>
+    <!-- Repeat for all 16 categories -->
+  </div>
+</section>
+
 
     <!-- Goods -->
     <section class="panel" id="goods" role="tabpanel" aria-labelledby="tab-goods">
