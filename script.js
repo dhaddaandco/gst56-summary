@@ -46,48 +46,83 @@
   initFromHash();
 })();
 
-// --- Global search logic with auto-tab open ---
+// --- Global search logic with auto-tab open + Enter navigation + counter ---
 const searchBox = document.getElementById('searchBox');
-searchBox.addEventListener('input', function() {
-  const query = this.value.toLowerCase();
-  const panels = document.querySelectorAll('.panel');
-  const tabs = document.querySelectorAll('.tab');
+const searchCount = document.getElementById('searchCount');
+const panels = document.querySelectorAll('.panel');
+const tabs = document.querySelectorAll('.tab');
 
-  // Clear old highlights
+let searchResults = [];   // store all matches
+let currentResult = -1;   // current index
+
+function clearHighlights() {
   panels.forEach(panel => {
     panel.innerHTML = panel.innerHTML.replace(/<mark>(.*?)<\/mark>/g, "$1");
   });
+  searchCount.textContent = "";
+}
 
-  if (query.trim() === "") return; // if empty, stop
+function doSearch(query) {
+  clearHighlights();
+  searchResults = [];
+  currentResult = -1;
 
-  let firstMatchPanel = null;
+  if (!query.trim()) return;
 
   panels.forEach(panel => {
     const textNodes = panel.querySelectorAll("p, li, h2, h3, summary, div");
-    let panelHasMatch = false;
-
     textNodes.forEach(node => {
       if (node.textContent.toLowerCase().includes(query)) {
-        panelHasMatch = true;
         const regex = new RegExp(`(${query})`, "gi");
         node.innerHTML = node.textContent.replace(regex, "<mark>$1</mark>");
+
+        node.querySelectorAll("mark").forEach(m => {
+          searchResults.push({ panelId: panel.id, element: m });
+        });
       }
     });
+  });
 
-    // Remember the first panel where a match is found
-    if (panelHasMatch && !firstMatchPanel) {
-      firstMatchPanel = panel.id;
+  if (searchResults.length > 0) {
+    goToResult(0);
+  } else {
+    searchCount.textContent = "No results found";
+  }
+}
+
+function goToResult(index) {
+  if (searchResults.length === 0) return;
+  currentResult = (index + searchResults.length) % searchResults.length;
+  const result = searchResults[currentResult];
+
+  // Switch to the right tab
+  tabs.forEach(tab => {
+    const target = tab.getAttribute('data-target');
+    if (target === result.panelId) {
+      tab.click();
     }
   });
 
-  // If we found a match inside a hidden tab → open it
-  if (firstMatchPanel) {
-    tabs.forEach(tab => {
-      const target = tab.getAttribute('data-target');
-      if (target === firstMatchPanel) {
-        tab.click(); // trigger tab switch
-      }
-    });
-  }
+  // Scroll to the result
+  setTimeout(() => {
+    result.element.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 200);
+
+  // Update counter
+  searchCount.textContent = `Result ${currentResult + 1} of ${searchResults.length}`;
+}
+
+// --- Typing in search box ---
+searchBox.addEventListener('input', function() {
+  doSearch(this.value.toLowerCase());
 });
 
+// --- Pressing Enter cycles results ---
+searchBox.addEventListener('keydown', function(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (searchResults.length > 0) {
+      goToResult(currentResult + 1);
+    }
+  }
+});
