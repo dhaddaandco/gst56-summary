@@ -38,20 +38,21 @@ header {
 h1 {
   text-align: center;
   margin: 16px 0 20px;
+  font-weight: 700;
 }
 
 h1 .title {
-  font-size: clamp(30px, 3.8vw, 42px); /* slightly bigger */
+  font-size: clamp(32px, 4vw, 44px); /* Big title */
   font-weight: 700;
-  color: #ffffff;  /* pure white for contrast on gradient */
-  letter-spacing: 0.5px;
+  color: #ffffff; /* White */
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.4); /* subtle glow */
 }
 
 h1 .date {
-  font-size: clamp(16px, 2vw, 20px); /* smaller than title */
-  font-weight: 400;
-  margin-left: 8px;
-  color: #dbeafe;  /* soft light-blue */
+  font-size: clamp(16px, 1.8vw, 20px); /* Smaller */
+  font-weight: 500;
+  margin-left: 10px;
+  color: #e0e7ff; /* Light blue/gray */
 }
 
 
