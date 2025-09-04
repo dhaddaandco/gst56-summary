@@ -95,6 +95,13 @@ function goToResult(index) {
   currentResult = (index + searchResults.length) % searchResults.length;
   const result = searchResults[currentResult];
 
+// Remove old "active"
+document.querySelectorAll("mark").forEach(m => m.classList.remove("active"));
+
+// Add active to current
+result.element.classList.add("active");
+
+  
   // Switch to the right tab
   tabs.forEach(tab => {
     const target = tab.getAttribute('data-target');
