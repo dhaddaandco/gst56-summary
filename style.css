@@ -9,16 +9,6 @@
   --border: #232838;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #f7f7fb;
-    --card: #ffffff;
-    --muted: #475569;
-    --text: #0f172a;
-    --border: #e5e7eb;
-  }
-}
-
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
