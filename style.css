@@ -30,31 +30,31 @@ header {
   padding: 28px 0 8px;
 }
 
-<h1>
-  <span class="title">GST Council's 56th Meeting</span>
-  <span class="date">— September 3rd, 2025</span>
-</h1>
-
-h1 {
+<header class="page-header">
+  <h1 class="main-title">GST Council's 56th Meeting</h1>
+  <p class="sub-date">September 3rd, 2025</p>
+</header>
+.page-header {
   text-align: center;
-  margin: 16px 0 20px;
-  font-weight: 700;
+  margin: 30px 0 20px;
 }
 
-h1 .title {
-  font-size: clamp(32px, 4vw, 44px); /* Big title */
-  font-weight: 700;
-  color: #ffffff; /* White */
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.4); /* subtle glow */
+.main-title {
+  font-size: clamp(32px, 4vw, 46px);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+  text-shadow: 1px 2px 6px rgba(0,0,0,0.5);
 }
 
-h1 .date {
-  font-size: clamp(16px, 1.8vw, 20px); /* Smaller */
+.sub-date {
+  font-size: clamp(16px, 1.8vw, 20px);
   font-weight: 500;
-  margin-left: 10px;
-  color: #e0e7ff; /* Light blue/gray */
+  color: #e0e7ff;
+  margin: 6px 0 0;
+  text-shadow: 0px 1px 3px rgba(0,0,0,0.3);
 }
-
 
 .tabs {
   background: linear-gradient(to bottom, #3b5998 0%, #6b82c4 100%);
