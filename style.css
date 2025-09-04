@@ -277,11 +277,11 @@ mark {
 .container {
   width: min(1250px, 96%);  /* was 1100px, now wider */
 }
+
 mark.active {
-  background: #ffeb3b;
+  background: orange;
   font-weight: bold;
-  border: 1px solid #f59e0b;
-  padding: 0 3px;
-  border-radius: 3px;
+  color: black;
 }
+
 
