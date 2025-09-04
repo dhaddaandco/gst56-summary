@@ -57,9 +57,9 @@ let currentResult = -1;   // current index
 
 function clearHighlights() {
   panels.forEach(panel => {
-    const nodes = panel.querySelectorAll("p, li, h2, h3, summary, div");
-    nodes.forEach(node => {
-      node.innerHTML = node.textContent; // reset to plain text
+    panel.querySelectorAll("mark").forEach(m => {
+      const text = document.createTextNode(m.textContent); 
+      m.replaceWith(text);  // restore text without killing structure
     });
   });
   searchCount.textContent = "";
@@ -69,23 +69,28 @@ function clearHighlights() {
 
 function doSearch(query) {
   clearHighlights();   // always clear first
+  searchResults = [];
+  currentResult = -1;
 
   if (!query.trim()) {
     return; // stop here if box is empty
   }
 
   panels.forEach(panel => {
-    const textNodes = panel.querySelectorAll("p, li, h2, h3, summary, div");
-    textNodes.forEach(node => {
-      if (node.textContent.toLowerCase().includes(query)) {
-        const regex = new RegExp(`(${query})`, "gi");
-        node.innerHTML = node.textContent.replace(regex, "<mark>$1</mark>");
+    const walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT, null, false);
+    const regex = new RegExp(`(${query})`, "gi");
+    let node;
+    while (node = walker.nextNode()) {
+      if (node.nodeValue.toLowerCase().includes(query)) {
+        const span = document.createElement("span");
+        span.innerHTML = node.nodeValue.replace(regex, "<mark>$1</mark>");
+        node.parentNode.replaceChild(span, node);
 
-        node.querySelectorAll("mark").forEach(m => {
+        span.querySelectorAll("mark").forEach(m => {
           searchResults.push({ panelId: panel.id, element: m });
         });
       }
-    });
+    }
   });
 
   if (searchResults.length > 0) {
