@@ -16,7 +16,7 @@ body {
   font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
   line-height: 1.6;
   color: var(--text);
-  background: linear-gradient(to bottom, #dbe4f7 0%, #a9b8e8 50%, #7b8ec9 100%);
+  background: linear-gradient(to bottom, #3b5998 0%, #6b82c4 50%, #a9b8e8 100%);
 }
 
 
@@ -39,16 +39,17 @@ h1 {
 h1 .sub { font-weight: 500; color: var(--muted); }
 
 .tabs {
+  background: linear-gradient(to bottom, #3b5998 0%, #6b82c4 100%);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   position: sticky;
   top: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0)) , var(--bg);
-  padding: 12px 0;
   z-index: 10;
-  border-bottom: 1px solid var(--border);
 }
+
 
 .tab {
   padding: 10px 14px;
