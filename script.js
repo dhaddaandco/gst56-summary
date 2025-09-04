@@ -1,4 +1,6 @@
-  // Accessible tabs with hash-based routing (no framework)
+// -------------------------
+// Accessible tabs with hash-based routing (no framework)
+// -------------------------
 (function(){
   const tablist = document.querySelector('.tabs');
   const tabs = Array.from(document.querySelectorAll('.tab'));
@@ -7,10 +9,9 @@
   function show(id){
     panels.forEach(p => p.classList.toggle('show', p.id === id));
     tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.target === id));
-    // move focus only when triggered by keyboard selection
   }
 
-  // Setup click handlers
+  // Setup click + keyboard handlers
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const id = tab.dataset.target;
@@ -46,20 +47,24 @@
   initFromHash();
 })();
 
-// --- Global search logic with auto-tab open + Enter navigation + counter ---
+// -------------------------
+// Global search logic
+// -------------------------
 const searchBox = document.getElementById('searchBox');
 const searchCount = document.getElementById('searchCount');
 const panels = document.querySelectorAll('.panel');
 const tabs = document.querySelectorAll('.tab');
 
-let searchResults = [];   // store all matches
-let currentResult = -1;   // current index
+let searchResults = [];
+let currentResult = -1;
+let lastQuery = "";
 
+// Clear all highlights
 function clearHighlights() {
   panels.forEach(panel => {
     panel.querySelectorAll("mark").forEach(m => {
       const textNode = document.createTextNode(m.textContent);
-      m.replaceWith(textNode);  // unwrap marks safely
+      m.replaceWith(textNode);
     });
   });
   searchResults = [];
@@ -67,6 +72,7 @@ function clearHighlights() {
   searchCount.textContent = "";
 }
 
+// Run search
 function doSearch(query) {
   clearHighlights();
   if (!query.trim()) return;
@@ -81,18 +87,15 @@ function doSearch(query) {
         const frag = document.createDocumentFragment();
         let lastIdx = 0;
         node.nodeValue.replace(regex, (match, p1, offset) => {
-          // plain text before match
           if (offset > lastIdx) {
             frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx, offset)));
           }
-          // highlight
           const mark = document.createElement("mark");
           mark.textContent = match;
           frag.appendChild(mark);
           searchResults.push({ panelId: panel.id, element: mark });
           lastIdx = offset + match.length;
         });
-        // leftover text
         if (lastIdx < node.nodeValue.length) {
           frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx)));
         }
@@ -108,19 +111,20 @@ function doSearch(query) {
   }
 }
 
+// Jump to result
 function goToResult(index) {
   if (searchResults.length === 0) return;
+
   currentResult = (index + searchResults.length) % searchResults.length;
   const result = searchResults[currentResult];
 
-// Remove old "active"
-document.querySelectorAll("mark").forEach(m => m.classList.remove("active"));
+  // Remove old active
+  document.querySelectorAll("mark").forEach(m => m.classList.remove("active"));
 
-// Add active to current
-result.element.classList.add("active");
+  // Mark current as active
+  result.element.classList.add("active");
 
-  
-  // Switch to the right tab
+  // Switch to correct tab
   tabs.forEach(tab => {
     const target = tab.getAttribute('data-target');
     if (target === result.panelId) {
@@ -128,7 +132,7 @@ result.element.classList.add("active");
     }
   });
 
-  // Scroll to the result
+  // Scroll into view
   setTimeout(() => {
     result.element.scrollIntoView({ behavior: "smooth", block: "center" });
   }, 200);
@@ -137,31 +141,40 @@ result.element.classList.add("active");
   searchCount.textContent = `Result ${currentResult + 1} of ${searchResults.length}`;
 }
 
-// --- Typing in search box ---
+// -------------------------
+// SearchBox Events
+// -------------------------
 searchBox.addEventListener('input', function() {
-  doSearch(this.value.toLowerCase());
+  const query = this.value.toLowerCase();
+  if (query !== lastQuery) {
+    lastQuery = query;
+    doSearch(query);
+  }
 });
 
-// --- Pressing Enter cycles results ---
 searchBox.addEventListener('keydown', function(e) {
   if (e.key === "Enter") {
     e.preventDefault();
     if (searchResults.length > 0) {
       goToResult(currentResult + 1);
     }
+  } else if (e.key === "F3" && e.shiftKey) {
+    // Optional: shift+F3 for backwards navigation
+    e.preventDefault();
+    if (searchResults.length > 0) {
+      goToResult(currentResult - 1);
+    }
   }
 });
 
-// --- Sub-tab switching logic for Rate Rationalisation ---
+// -------------------------
+// Sub-tab switching
+// -------------------------
 document.querySelectorAll('.sub-tab').forEach(tab => {
   tab.addEventListener('click', function() {
     const target = this.getAttribute('data-target');
-
-    // Toggle active tab
     document.querySelectorAll('.sub-tab').forEach(t => t.setAttribute('aria-selected','false'));
     this.setAttribute('aria-selected','true');
-
-    // Toggle panels
     document.querySelectorAll('.sub-panel').forEach(p => {
       p.classList.remove('show');
       if (p.id === target) p.classList.add('show');
