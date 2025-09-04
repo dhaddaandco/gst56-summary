@@ -1,7 +1,7 @@
-// Accessible tabs with hash-based routing (no framework)
+// --- Tab logic (hash-based navigation) ---
 (function(){
-  const tabs = Array.from(document.querySelectorAll('.tab'));
-  const panels = Array.from(document.querySelectorAll('.panel'));
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
 
   function show(id){
     panels.forEach(p => p.classList.toggle('show', p.id === id));
@@ -20,31 +20,31 @@
 
   function initFromHash(){
     const hash = (location.hash || '').replace('#','');
-    const valid = panels.some(p => p.id === hash);
+    const valid = Array.from(panels).some(p => p.id === hash);
     show(valid ? hash : panels[0].id);
   }
+
   window.addEventListener('hashchange', initFromHash);
   initFromHash();
 })();
 
-// --- Global search logic with auto-tab open + Enter navigation + counter ---
+// --- Global search with highlight + navigation ---
 const searchBox = document.getElementById('searchBox');
 const searchCount = document.getElementById('searchCount');
 const panels = document.querySelectorAll('.panel');
 const tabs = document.querySelectorAll('.tab');
 
-let searchResults = [];
-let currentResult = -1;
+let results = [];
+let current = -1;
 
 function clearHighlights() {
   panels.forEach(panel => {
     panel.querySelectorAll("mark").forEach(m => {
-      const textNode = document.createTextNode(m.textContent);
-      m.replaceWith(textNode);
+      m.replaceWith(m.textContent); // unwrap mark
     });
   });
-  searchResults = [];
-  currentResult = -1;
+  results = [];
+  current = -1;
   searchCount.textContent = "";
 }
 
@@ -52,35 +52,31 @@ function doSearch(query) {
   clearHighlights();
   if (!query.trim()) return;
 
-  const regex = new RegExp(`(${query})`, "gi");
+  const regex = new RegExp(query, "gi");
 
   panels.forEach(panel => {
     const walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT, null, false);
     let node;
     while ((node = walker.nextNode())) {
-      let text = node.nodeValue;
+      const text = node.nodeValue;
       if (regex.test(text)) {
         const frag = document.createDocumentFragment();
-        let lastIdx = 0;
-        text.replace(regex, (match, _, offset) => {
-          if (offset > lastIdx) {
-            frag.appendChild(document.createTextNode(text.slice(lastIdx, offset)));
-          }
+        let last = 0;
+        text.replace(regex, (match, offset) => {
+          if (offset > last) frag.appendChild(document.createTextNode(text.slice(last, offset)));
           const mark = document.createElement("mark");
           mark.textContent = match;
           frag.appendChild(mark);
-          searchResults.push({ panelId: panel.id, element: mark });
-          lastIdx = offset + match.length;
+          results.push({ panelId: panel.id, el: mark });
+          last = offset + match.length;
         });
-        if (lastIdx < text.length) {
-          frag.appendChild(document.createTextNode(text.slice(lastIdx)));
-        }
+        if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
         node.parentNode.replaceChild(frag, node);
       }
     }
   });
 
-  if (searchResults.length > 0) {
+  if (results.length > 0) {
     goToResult(0);
   } else {
     searchCount.textContent = "No results found";
@@ -88,58 +84,36 @@ function doSearch(query) {
 }
 
 function goToResult(index) {
-  if (searchResults.length === 0) return;
-  currentResult = (index + searchResults.length) % searchResults.length;
-  const result = searchResults[currentResult];
+  if (results.length === 0) return;
+  current = (index + results.length) % results.length;
+  const r = results[current];
 
-  // Remove old "active"
   document.querySelectorAll("mark").forEach(m => m.classList.remove("active"));
+  r.el.classList.add("active");
 
-  // Add active to current
-  result.element.classList.add("active");
-
-  // Switch to correct tab
+  // Switch to right tab
   tabs.forEach(tab => {
-    const target = tab.getAttribute('data-target');
-    if (target === result.panelId) {
-      tab.click();
-    }
+    if (tab.dataset.target === r.panelId) tab.click();
   });
 
   // Scroll into view
-  setTimeout(() => {
-    result.element.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, 200);
+  setTimeout(() => r.el.scrollIntoView({ behavior: "smooth", block: "center" }), 200);
 
-  // Update counter
-  searchCount.textContent = `Result ${currentResult + 1} of ${searchResults.length}`;
+  searchCount.textContent = `Result ${current + 1} of ${results.length}`;
 }
 
-// --- Typing in search box ---
-searchBox.addEventListener('input', function() {
-  doSearch(this.value.toLowerCase());
-});
+// --- Events ---
+searchBox.addEventListener('input', e => doSearch(e.target.value.toLowerCase()));
 
-// --- Pressing Enter cycles results ---
-searchBox.addEventListener('keydown', function(e) {
+searchBox.addEventListener('keydown', e => {
   if (e.key === "Enter") {
     e.preventDefault();
-    if (searchResults.length > 0) {
-      goToResult(currentResult + 1);
+    if (results.length > 0) {
+      if (e.shiftKey) {
+        goToResult(current - 1); // backward
+      } else {
+        goToResult(current + 1); // forward
+      }
     }
   }
-});
-
-// --- Sub-tab switching logic for Rate Rationalisation ---
-document.querySelectorAll('.sub-tab').forEach(tab => {
-  tab.addEventListener('click', function() {
-    const target = this.getAttribute('data-target');
-    document.querySelectorAll('.sub-tab').forEach(t => t.setAttribute('aria-selected','false'));
-    this.setAttribute('aria-selected','true');
-
-    document.querySelectorAll('.sub-panel').forEach(p => {
-      p.classList.remove('show');
-      if (p.id === target) p.classList.add('show');
-    });
-  });
 });
