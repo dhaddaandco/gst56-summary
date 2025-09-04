@@ -1,22 +1,12 @@
-/* Minimal, clean aesthetic with Roboto */
+/* Light theme only with gradient background */
 :root {
-  --bg: #0b0d12;
-  --card: #121620;
-  --muted: #98a2b3;
-  --text: #e5e7eb;
-  --primary: #3b82f6;
-  --ring: rgba(59,130,246,0.35);
-  --border: #232838;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #f7f7fb;
-    --card: #ffffff;
-    --muted: #475569;
-    --text: #0f172a;
-    --border: #e5e7eb;
-  }
+  --bg: #f7f7fb;
+  --card: #ffffff;
+  --muted: #475569;
+  --text: #0f172a;
+  --primary: #004aad;
+  --ring: rgba(0,74,173,0.25);
+  --border: #e5e7eb;
 }
 
 * { box-sizing: border-box; }
@@ -26,7 +16,7 @@ body {
   font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
   line-height: 1.6;
   color: var(--text);
-  background: radial-gradient(1200px 600px at 20% -10%, #1b2240 0%, transparent 60%), var(--bg);
+  background: radial-gradient(1200px 600px at 20% -10%, #e3e8f7 0%, #f7f7fb 70%);
 }
 
 .container {
@@ -52,7 +42,7 @@ h1 .sub { font-weight: 500; color: var(--muted); }
   flex-wrap: wrap;
   position: sticky;
   top: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0)) , var(--bg);
+  background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0)) , var(--bg);
   padding: 12px 0;
   z-index: 10;
   border-bottom: 1px solid var(--border);
@@ -79,11 +69,12 @@ main { padding: 18px 0 40px; }
 .panel {
   display: none;
   background: var(--card);
+  color: var(--text);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 18px 18px 10px;
   margin: 16px 0;
-  box-shadow: 0 10px 28px rgba(13, 16, 26, 0.25);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
 }
 
 .panel.show { display: block; }
@@ -100,7 +91,7 @@ ul { padding-left: 20px; }
   color: var(--muted);
 }
 details.qa {
-  background: color-mix(in srgb, var(--card), #fff 2%);
+  background: #ffffff;
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 12px;
