@@ -32,12 +32,15 @@ header {
 
 
 .page-header {
+  margin: 12px auto 12px;       /* Reduced empty space */
   text-align: center;
-  margin: 30px 0 20px;
+  border-bottom: 2px solid #ffffff; /* Underline across heading block */
+  padding-bottom: 6px;
+  width: fit-content;           /* Keeps underline close to content */
 }
 
 .main-title {
-  font-size: clamp(32px, 4vw, 46px);
+  font-size: clamp(28px, 3.5vw, 40px);
   font-weight: 800;
   color: #ffffff;
   margin: 0;
@@ -46,11 +49,11 @@ header {
 }
 
 .sub-date {
-  font-size: clamp(16px, 1.8vw, 20px);
+  font-size: clamp(14px, 1.5vw, 18px); /* Smaller than heading */
   font-weight: 500;
   color: #e0e7ff;
-  margin: 6px 0 0;
-  text-shadow: 0px 1px 3px rgba(0,0,0,0.3);
+  margin: 2px 0 0;
+  text-align: left;              /* Align to left under heading */
 }
 
 .tabs {
