@@ -1,8 +1,7 @@
-// -------------------------
-// Accessible tabs with hash-based routing (no framework)
-// -------------------------
+// -------------------------------
+// Accessible tabs with hash-based routing
+// -------------------------------
 (function(){
-  const tablist = document.querySelector('.tabs');
   const tabs = Array.from(document.querySelectorAll('.tab'));
   const panels = Array.from(document.querySelectorAll('.panel'));
 
@@ -11,7 +10,7 @@
     tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.target === id));
   }
 
-  // Setup click + keyboard handlers
+  // Setup click + keyboard
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const id = tab.dataset.target;
@@ -37,7 +36,6 @@
     });
   });
 
-  // Load initial tab from hash or default to first
   function initFromHash(){
     const hash = (location.hash || '').replace('#','');
     const valid = panels.some(p => p.id === hash);
@@ -47,9 +45,9 @@
   initFromHash();
 })();
 
-// -------------------------
-// Global search logic
-// -------------------------
+// -------------------------------
+// Global Search with toggle + counter
+// -------------------------------
 const searchBox = document.getElementById('searchBox');
 const searchCount = document.getElementById('searchCount');
 const panels = document.querySelectorAll('.panel');
@@ -57,22 +55,16 @@ const tabs = document.querySelectorAll('.tab');
 
 let searchResults = [];
 let currentResult = -1;
-let lastQuery = "";
 
-// Clear all highlights
 function clearHighlights() {
   panels.forEach(panel => {
-    panel.querySelectorAll("mark").forEach(m => {
-      const textNode = document.createTextNode(m.textContent);
-      m.replaceWith(textNode);
-    });
+    panel.innerHTML = panel.innerHTML.replace(/<\/?mark.*?>/g, ""); // remove all <mark>
   });
   searchResults = [];
   currentResult = -1;
   searchCount.textContent = "";
 }
 
-// Run search
 function doSearch(query) {
   clearHighlights();
   if (!query.trim()) return;
@@ -80,28 +72,17 @@ function doSearch(query) {
   const regex = new RegExp(`(${query})`, "gi");
 
   panels.forEach(panel => {
-    const walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT, null, false);
-    let node;
-    while ((node = walker.nextNode())) {
-      if (regex.test(node.nodeValue)) {
-        const frag = document.createDocumentFragment();
-        let lastIdx = 0;
-        node.nodeValue.replace(regex, (match, p1, offset) => {
-          if (offset > lastIdx) {
-            frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx, offset)));
-          }
-          const mark = document.createElement("mark");
-          mark.textContent = match;
-          frag.appendChild(mark);
-          searchResults.push({ panelId: panel.id, element: mark });
-          lastIdx = offset + match.length;
-        });
-        if (lastIdx < node.nodeValue.length) {
-          frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx)));
-        }
-        node.parentNode.replaceChild(frag, node);
+    // Only mark inside visible text nodes (tables, p, li, etc.)
+    panel.querySelectorAll("p, li, h2, h3, td, th, div, span").forEach(node => {
+      if (node.innerText.toLowerCase().includes(query)) {
+        node.innerHTML = node.innerHTML.replace(regex, "<mark>$1</mark>");
       }
-    }
+    });
+
+    // Collect all matches in this panel
+    panel.querySelectorAll("mark").forEach(m => {
+      searchResults.push({ panelId: panel.id, element: m });
+    });
   });
 
   if (searchResults.length > 0) {
@@ -111,23 +92,20 @@ function doSearch(query) {
   }
 }
 
-// Jump to result
 function goToResult(index) {
   if (searchResults.length === 0) return;
-
   currentResult = (index + searchResults.length) % searchResults.length;
   const result = searchResults[currentResult];
 
-  // Remove old active
+  // Clear old active
   document.querySelectorAll("mark").forEach(m => m.classList.remove("active"));
 
-  // Mark current as active
+  // Set new active
   result.element.classList.add("active");
 
-  // Switch to correct tab
+  // Switch tab if needed
   tabs.forEach(tab => {
-    const target = tab.getAttribute('data-target');
-    if (target === result.panelId) {
+    if (tab.dataset.target === result.panelId) {
       tab.click();
     }
   });
@@ -141,41 +119,36 @@ function goToResult(index) {
   searchCount.textContent = `Result ${currentResult + 1} of ${searchResults.length}`;
 }
 
-// -------------------------
-// SearchBox Events
-// -------------------------
-// -------------------------
-// SearchBox Events
-// -------------------------
+// -------------------------------
+// Event Listeners
+// -------------------------------
 searchBox.addEventListener('input', function() {
-  const query = this.value.toLowerCase();
-  lastQuery = query;            // always update lastQuery
-  doSearch(query);              // always refresh search results
+  doSearch(this.value.toLowerCase());
 });
 
 searchBox.addEventListener('keydown', function(e) {
   if (e.key === "Enter") {
     e.preventDefault();
     if (searchResults.length > 0) {
-      goToResult(currentResult + 1);   // cycle forward
+      goToResult(currentResult + 1); // cycle next
     }
   } else if (e.shiftKey && e.key === "Enter") {
-    // Shift+Enter to go backwards
     e.preventDefault();
     if (searchResults.length > 0) {
-      goToResult(currentResult - 1);
+      goToResult(currentResult - 1); // cycle prev
     }
   }
 });
 
-// -------------------------
+// -------------------------------
 // Sub-tab switching
-// -------------------------
+// -------------------------------
 document.querySelectorAll('.sub-tab').forEach(tab => {
   tab.addEventListener('click', function() {
     const target = this.getAttribute('data-target');
     document.querySelectorAll('.sub-tab').forEach(t => t.setAttribute('aria-selected','false'));
     this.setAttribute('aria-selected','true');
+
     document.querySelectorAll('.sub-panel').forEach(p => {
       p.classList.remove('show');
       if (p.id === target) p.classList.add('show');
