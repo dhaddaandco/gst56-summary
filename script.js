@@ -1,7 +1,6 @@
-// -------------------------------
-// Accessible tabs with hash-based routing
-// -------------------------------
+// Accessible tabs with hash-based routing (no framework)
 (function(){
+  const tablist = document.querySelector('.tabs');
   const tabs = Array.from(document.querySelectorAll('.tab'));
   const panels = Array.from(document.querySelectorAll('.panel'));
 
@@ -10,7 +9,7 @@
     tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.target === id));
   }
 
-  // Setup click + keyboard
+  // Setup click handlers
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const id = tab.dataset.target;
@@ -36,6 +35,7 @@
     });
   });
 
+  // Load initial tab from hash or default to first
   function initFromHash(){
     const hash = (location.hash || '').replace('#','');
     const valid = panels.some(p => p.id === hash);
@@ -45,9 +45,7 @@
   initFromHash();
 })();
 
-// -------------------------------
-// Global Search with toggle + counter
-// -------------------------------
+// --- Global search logic with auto-tab open + Enter navigation + counter ---
 const searchBox = document.getElementById('searchBox');
 const searchCount = document.getElementById('searchCount');
 const panels = document.querySelectorAll('.panel');
@@ -58,7 +56,10 @@ let currentResult = -1;
 
 function clearHighlights() {
   panels.forEach(panel => {
-    panel.innerHTML = panel.innerHTML.replace(/<\/?mark.*?>/g, ""); // remove all <mark>
+    panel.querySelectorAll("mark").forEach(m => {
+      const textNode = document.createTextNode(m.textContent);
+      m.replaceWith(textNode);  // unwrap <mark>
+    });
   });
   searchResults = [];
   currentResult = -1;
@@ -72,7 +73,6 @@ function doSearch(query) {
   const regex = new RegExp(`(${query})`, "gi");
 
   panels.forEach(panel => {
-    // Walk through *text nodes* only, ignore HTML tags
     const walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT, null, false);
     let node;
     while ((node = walker.nextNode())) {
@@ -80,18 +80,15 @@ function doSearch(query) {
         const frag = document.createDocumentFragment();
         let lastIdx = 0;
         node.nodeValue.replace(regex, (match, p1, offset) => {
-          // text before match
           if (offset > lastIdx) {
             frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx, offset)));
           }
-          // highlight match
           const mark = document.createElement("mark");
           mark.textContent = match;
           frag.appendChild(mark);
           searchResults.push({ panelId: panel.id, element: mark });
           lastIdx = offset + match.length;
         });
-        // leftover
         if (lastIdx < node.nodeValue.length) {
           frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx)));
         }
@@ -112,15 +109,16 @@ function goToResult(index) {
   currentResult = (index + searchResults.length) % searchResults.length;
   const result = searchResults[currentResult];
 
-  // Clear old active
+  // Remove old "active"
   document.querySelectorAll("mark").forEach(m => m.classList.remove("active"));
 
-  // Set new active
+  // Add active to current
   result.element.classList.add("active");
 
-  // Switch tab if needed
+  // Switch to correct tab
   tabs.forEach(tab => {
-    if (tab.dataset.target === result.panelId) {
+    const target = tab.getAttribute('data-target');
+    if (target === result.panelId) {
       tab.click();
     }
   });
@@ -134,30 +132,22 @@ function goToResult(index) {
   searchCount.textContent = `Result ${currentResult + 1} of ${searchResults.length}`;
 }
 
-// -------------------------------
-// Event Listeners
-// -------------------------------
+// --- Typing in search box ---
 searchBox.addEventListener('input', function() {
   doSearch(this.value.toLowerCase());
 });
 
+// --- Pressing Enter cycles results ---
 searchBox.addEventListener('keydown', function(e) {
   if (e.key === "Enter") {
     e.preventDefault();
     if (searchResults.length > 0) {
-      goToResult(currentResult + 1); // cycle next
-    }
-  } else if (e.shiftKey && e.key === "Enter") {
-    e.preventDefault();
-    if (searchResults.length > 0) {
-      goToResult(currentResult - 1); // cycle prev
+      goToResult(currentResult + 1);
     }
   }
 });
 
-// -------------------------------
-// Sub-tab switching
-// -------------------------------
+// --- Sub-tab switching logic for Rate Rationalisation ---
 document.querySelectorAll('.sub-tab').forEach(tab => {
   tab.addEventListener('click', function() {
     const target = this.getAttribute('data-target');
