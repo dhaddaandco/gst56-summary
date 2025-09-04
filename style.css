@@ -68,13 +68,15 @@ main { padding: 18px 0 40px; }
 
 .panel {
   display: none;
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: #ffffff;         /* light background */
+  color: #0f172a;              /* dark text */
+  border: 1px solid #d4d7e2;   /* light border */
   border-radius: 14px;
   padding: 18px;
   margin: 16px 0;
 }
 .panel.show { display: block; }
+
 
 h2 {
   margin: 0 0 6px;
