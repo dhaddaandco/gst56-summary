@@ -1,12 +1,12 @@
-/* Light mode with shaded background */
+/* Light mode with gradient background */
 :root {
-  --bg: #f0f2f8;      /* soft light gray-blue background */
-  --card: #ffffff;    /* white cards/panels */
-  --muted: #555c6a;   /* muted gray text */
-  --text: #1a1c23;    /* main text color */
-  --primary: #004aad; /* blue accent */
+  --bg-gradient: radial-gradient(1200px 600px at 20% -10%, #e3e8f7 0%, #f7f7fb 70%);
+  --card: #ffffff;
+  --muted: #555c6a;
+  --text: #0f172a;
+  --primary: #004aad;
   --ring: rgba(0,74,173,0.25);
-  --border: #d4d7e2;  /* softer border */
+  --border: #d4d7e2;
 }
 
 * { box-sizing: border-box; }
@@ -15,7 +15,7 @@ body {
   font-family: 'Roboto', system-ui, -apple-system, Segoe UI, Arial, sans-serif;
   line-height: 1.6;
   color: var(--text);
-  background: var(--bg);
+  background: var(--bg-gradient);
 }
 
 .container {
@@ -31,6 +31,9 @@ h1 {
   font-size: clamp(22px, 3vw, 34px);
   font-weight: 700;
   margin: 0 0 8px;
+  background: linear-gradient(90deg, #004aad, #1f3a93);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 h1 .sub { font-weight: 500; color: var(--muted); }
 
@@ -40,7 +43,7 @@ h1 .sub { font-weight: 500; color: var(--muted); }
   flex-wrap: wrap;
   position: sticky;
   top: 0;
-  background: var(--bg);
+  background: var(--bg-gradient);
   padding: 12px 0;
   z-index: 10;
   border-bottom: 1px solid var(--border);
