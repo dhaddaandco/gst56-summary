@@ -41,17 +41,17 @@ h1 {
 }
 
 h1 .title {
-  font-size: clamp(28px, 3.5vw, 40px); /* Bigger than before */
+  font-size: clamp(30px, 3.8vw, 42px); /* slightly bigger */
   font-weight: 700;
-  color: #0f172a; /* Bold black/navy */
+  color: #ffffff;  /* pure white for contrast on gradient */
+  letter-spacing: 0.5px;
 }
 
 h1 .date {
-  font-size: clamp(16px, 2vw, 20px); /* Smaller than heading */
-  font-weight: 500;
+  font-size: clamp(16px, 2vw, 20px); /* smaller than title */
+  font-weight: 400;
   margin-left: 8px;
-  color: #2563eb; /* Professional blue accent */
-  font-style: italic; /* Subtle difference */
+  color: #dbeafe;  /* soft light-blue */
 }
 
 
