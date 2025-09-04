@@ -278,10 +278,14 @@ mark {
   width: min(1250px, 96%);  /* was 1100px, now wider */
 }
 
+mark {
+  background: yellow;
+  color: black;
+}
 mark.active {
   background: orange;
   font-weight: bold;
-  color: black;
 }
+
 
 
