@@ -72,17 +72,32 @@ function doSearch(query) {
   const regex = new RegExp(`(${query})`, "gi");
 
   panels.forEach(panel => {
-    // Only mark inside visible text nodes (tables, p, li, etc.)
-    panel.querySelectorAll("p, li, h2, h3, td, th, div, span").forEach(node => {
-      if (node.innerText.toLowerCase().includes(query)) {
-        node.innerHTML = node.innerHTML.replace(regex, "<mark>$1</mark>");
+    // Walk through *text nodes* only, ignore HTML tags
+    const walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    while ((node = walker.nextNode())) {
+      if (regex.test(node.nodeValue)) {
+        const frag = document.createDocumentFragment();
+        let lastIdx = 0;
+        node.nodeValue.replace(regex, (match, p1, offset) => {
+          // text before match
+          if (offset > lastIdx) {
+            frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx, offset)));
+          }
+          // highlight match
+          const mark = document.createElement("mark");
+          mark.textContent = match;
+          frag.appendChild(mark);
+          searchResults.push({ panelId: panel.id, element: mark });
+          lastIdx = offset + match.length;
+        });
+        // leftover
+        if (lastIdx < node.nodeValue.length) {
+          frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx)));
+        }
+        node.parentNode.replaceChild(frag, node);
       }
-    });
-
-    // Collect all matches in this panel
-    panel.querySelectorAll("mark").forEach(m => {
-      searchResults.push({ panelId: panel.id, element: m });
-    });
+    }
   });
 
   if (searchResults.length > 0) {
