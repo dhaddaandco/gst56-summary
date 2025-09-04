@@ -46,11 +46,12 @@
   initFromHash();
 })();
 
-// --- Global search logic ---
+// --- Global search logic with auto-tab open ---
 const searchBox = document.getElementById('searchBox');
 searchBox.addEventListener('input', function() {
   const query = this.value.toLowerCase();
   const panels = document.querySelectorAll('.panel');
+  const tabs = document.querySelectorAll('.tab');
 
   // Clear old highlights
   panels.forEach(panel => {
@@ -59,20 +60,33 @@ searchBox.addEventListener('input', function() {
 
   if (query.trim() === "") return; // if empty, stop
 
-  let found = false;
+  let firstMatchPanel = null;
+
   panels.forEach(panel => {
     const textNodes = panel.querySelectorAll("p, li, h2, h3, summary, div");
+    let panelHasMatch = false;
+
     textNodes.forEach(node => {
       if (node.textContent.toLowerCase().includes(query)) {
-        found = true;
+        panelHasMatch = true;
         const regex = new RegExp(`(${query})`, "gi");
         node.innerHTML = node.textContent.replace(regex, "<mark>$1</mark>");
       }
     });
+
+    // Remember the first panel where a match is found
+    if (panelHasMatch && !firstMatchPanel) {
+      firstMatchPanel = panel.id;
+    }
   });
 
-  if (!found) {
-    console.log("No results found"); // (optional) show a message instead of console.log
+  // If we found a match inside a hidden tab → open it
+  if (firstMatchPanel) {
+    tabs.forEach(tab => {
+      const target = tab.getAttribute('data-target');
+      if (target === firstMatchPanel) {
+        tab.click(); // trigger tab switch
+      }
+    });
   }
 });
-
