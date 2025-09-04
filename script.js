@@ -1,6 +1,5 @@
 // Accessible tabs with hash-based routing (no framework)
 (function(){
-  const tablist = document.querySelector('.tabs');
   const tabs = Array.from(document.querySelectorAll('.tab'));
   const panels = Array.from(document.querySelectorAll('.panel'));
 
@@ -9,7 +8,6 @@
     tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.target === id));
   }
 
-  // Setup click handlers
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const id = tab.dataset.target;
@@ -18,24 +16,8 @@
         show(id);
       }
     });
-
-    tab.addEventListener('keydown', (e) => {
-      const i = tabs.indexOf(tab);
-      if (e.key === 'ArrowRight') {
-        tabs[(i+1) % tabs.length].focus();
-      } else if (e.key === 'ArrowLeft') {
-        tabs[(i-1+tabs.length) % tabs.length].focus();
-      } else if (e.key === 'Enter' || e.key === ' ') {
-        const id = tab.dataset.target;
-        if (id) {
-          history.pushState(null, '', `#${id}`);
-          show(id);
-        }
-      }
-    });
   });
 
-  // Load initial tab from hash or default to first
   function initFromHash(){
     const hash = (location.hash || '').replace('#','');
     const valid = panels.some(p => p.id === hash);
@@ -58,7 +40,7 @@ function clearHighlights() {
   panels.forEach(panel => {
     panel.querySelectorAll("mark").forEach(m => {
       const textNode = document.createTextNode(m.textContent);
-      m.replaceWith(textNode);  // unwrap <mark>
+      m.replaceWith(textNode);
     });
   });
   searchResults = [];
@@ -76,12 +58,13 @@ function doSearch(query) {
     const walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT, null, false);
     let node;
     while ((node = walker.nextNode())) {
-      if (regex.test(node.nodeValue)) {
+      let text = node.nodeValue;
+      if (regex.test(text)) {
         const frag = document.createDocumentFragment();
         let lastIdx = 0;
-        node.nodeValue.replace(regex, (match, p1, offset) => {
+        text.replace(regex, (match, _, offset) => {
           if (offset > lastIdx) {
-            frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx, offset)));
+            frag.appendChild(document.createTextNode(text.slice(lastIdx, offset)));
           }
           const mark = document.createElement("mark");
           mark.textContent = match;
@@ -89,8 +72,8 @@ function doSearch(query) {
           searchResults.push({ panelId: panel.id, element: mark });
           lastIdx = offset + match.length;
         });
-        if (lastIdx < node.nodeValue.length) {
-          frag.appendChild(document.createTextNode(node.nodeValue.slice(lastIdx)));
+        if (lastIdx < text.length) {
+          frag.appendChild(document.createTextNode(text.slice(lastIdx)));
         }
         node.parentNode.replaceChild(frag, node);
       }
