@@ -31,23 +31,27 @@ header {
 }
 
 <h1>
-  GST Council's 56th Meeting 
+  <span class="title">GST Council's 56th Meeting</span>
   <span class="date">— September 3rd, 2025</span>
 </h1>
 
 h1 {
-  font-size: clamp(24px, 3.2vw, 34px);
-  font-weight: 700;
   text-align: center;
-  margin: 16px 0 10px;
-  letter-spacing: 0.4px;
-  color: #0f172a; /* main heading */
+  margin: 16px 0 20px;
+}
+
+h1 .title {
+  font-size: clamp(28px, 3.5vw, 40px); /* Bigger than before */
+  font-weight: 700;
+  color: #0f172a; /* Bold black/navy */
 }
 
 h1 .date {
-  font-size: 0.7em;   /* smaller than heading */
-  font-weight: 500;   /* lighter than title */
-  color: #0f172a;     /* same black/navy tone */
+  font-size: clamp(16px, 2vw, 20px); /* Smaller than heading */
+  font-weight: 500;
+  margin-left: 8px;
+  color: #2563eb; /* Professional blue accent */
+  font-style: italic; /* Subtle difference */
 }
 
 
