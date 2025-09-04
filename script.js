@@ -45,3 +45,34 @@
   window.addEventListener('hashchange', initFromHash);
   initFromHash();
 })();
+
+// --- Global search logic ---
+const searchBox = document.getElementById('searchBox');
+searchBox.addEventListener('input', function() {
+  const query = this.value.toLowerCase();
+  const panels = document.querySelectorAll('.panel');
+
+  // Clear old highlights
+  panels.forEach(panel => {
+    panel.innerHTML = panel.innerHTML.replace(/<mark>(.*?)<\/mark>/g, "$1");
+  });
+
+  if (query.trim() === "") return; // if empty, stop
+
+  let found = false;
+  panels.forEach(panel => {
+    const textNodes = panel.querySelectorAll("p, li, h2, h3, summary, div");
+    textNodes.forEach(node => {
+      if (node.textContent.toLowerCase().includes(query)) {
+        found = true;
+        const regex = new RegExp(`(${query})`, "gi");
+        node.innerHTML = node.textContent.replace(regex, "<mark>$1</mark>");
+      }
+    });
+  });
+
+  if (!found) {
+    console.log("No results found"); // (optional) show a message instead of console.log
+  }
+});
+
