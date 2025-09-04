@@ -1,12 +1,12 @@
-/* Light mode only */
+/* Light mode with shaded background */
 :root {
-  --bg: #f7f7fb;
-  --card: #ffffff;
-  --muted: #475569;
-  --text: #0f172a;
-  --primary: #004aad;
+  --bg: #f0f2f8;      /* soft light gray-blue background */
+  --card: #ffffff;    /* white cards/panels */
+  --muted: #555c6a;   /* muted gray text */
+  --text: #1a1c23;    /* main text color */
+  --primary: #004aad; /* blue accent */
   --ring: rgba(0,74,173,0.25);
-  --border: #e5e7eb;
+  --border: #d4d7e2;  /* softer border */
 }
 
 * { box-sizing: border-box; }
