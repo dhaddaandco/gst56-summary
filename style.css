@@ -209,20 +209,29 @@ mark {
 .rate-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 14px;
+  table-layout: auto;
 }
+
 .rate-table th,
 .rate-table td {
   border: 1px solid var(--border);
-  padding: 6px 10px;
+  padding: 8px 12px;
   text-align: left;
-}
-.rate-table th {
-  background: var(--bg);
-  font-weight: 600;
-}
-.rate-table tr:nth-child(even) {
-  background: #f0f2f8;
+  vertical-align: top;
 }
 
+.rate-table th {
+  background: #f1f3f9;
+  font-weight: 600;
+}
+
+.rate-table tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* Reduce margins so table takes more horizontal space */
+.container {
+  width: min(1250px, 96%);  /* was 1100px, now wider */
+}
