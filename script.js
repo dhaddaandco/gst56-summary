@@ -126,3 +126,20 @@ searchBox.addEventListener('keydown', function(e) {
     }
   }
 });
+
+// --- Sub-tab switching logic for Rate Rationalisation ---
+document.querySelectorAll('.sub-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    const target = this.getAttribute('data-target');
+
+    // Toggle active tab
+    document.querySelectorAll('.sub-tab').forEach(t => t.setAttribute('aria-selected','false'));
+    this.setAttribute('aria-selected','true');
+
+    // Toggle panels
+    document.querySelectorAll('.sub-panel').forEach(p => {
+      p.classList.remove('show');
+      if (p.id === target) p.classList.add('show');
+    });
+  });
+});
